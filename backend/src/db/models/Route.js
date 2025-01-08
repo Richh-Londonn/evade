@@ -1,0 +1,1 @@
+class Route { /* Route schema */ } module.exports = Route;

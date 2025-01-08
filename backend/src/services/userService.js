@@ -1,0 +1,1 @@
+class UserService { /* User service logic */ } module.exports = new UserService();

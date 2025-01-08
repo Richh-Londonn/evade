@@ -1,0 +1,1 @@
+class User { /* User schema */ } module.exports = User;

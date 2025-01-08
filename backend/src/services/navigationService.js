@@ -1,0 +1,1 @@
+class NavigationService { /* Navigation logic */ } module.exports = new NavigationService();
