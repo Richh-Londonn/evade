@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: ./github/actions/checkout
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: ./github/actions/setup-node
         with:
           node-version: 16
 
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: ./github/actions/checkout
 
       - name: Build Backend
         working-directory: ./backend
@@ -73,3 +73,46 @@ jobs:
         run: |
           scp -r ./mobile/build server:/var/www/evade-mobile
           ssh server 'systemctl restart evade-mobile'
+
+  advanced_features:
+    name: Enable New Features
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: ./github/actions/checkout
+
+      - name: Test OnStar-Like Features
+        working-directory: ./backend/onstar
+        run: npm test
+
+      - name: Test Viper/Compustar Security
+        working-directory: ./backend/security
+        run: npm test
+
+      - name: Test Advanced Navigation
+        working-directory: ./frontend/navigation
+        run: npm test
+
+      - name: Test Connectivity Features
+        working-directory: ./mobile/connectivity
+        run: npm test
+
+      - name: Deploy OnStar-Like Features
+        run: |
+          scp -r ./backend/onstar/build server:/var/www/evade-onstar
+          ssh server 'systemctl restart evade-onstar'
+
+      - name: Deploy Security Features
+        run: |
+          scp -r ./backend/security/build server:/var/www/evade-security
+          ssh server 'systemctl restart evade-security'
+
+      - name: Deploy Advanced Navigation
+        run: |
+          scp -r ./frontend/navigation/build server:/var/www/evade-navigation
+          ssh server 'systemctl restart evade-navigation'
+
+      - name: Deploy Connectivity Features
+        run: |
+          scp -r ./mobile/connectivity/build server:/var/www/evade-connectivity
+          ssh server 'systemctl restart evade-connectivity'
