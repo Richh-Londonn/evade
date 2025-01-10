@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: ./github/actions/checkout
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: ./github/actions/setup-node
+        uses: actions/setup-node@v3
         with:
           node-version: 16
 
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: ./github/actions/checkout
+        uses: actions/checkout@v3
 
       - name: Build Backend
         working-directory: ./backend
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: ./github/actions/checkout
+        uses: actions/checkout@v3
 
       - name: Test OnStar-Like Features
         working-directory: ./backend/onstar
