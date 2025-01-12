@@ -19,26 +19,37 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '18.x'
 
       - name: Install Dependencies
         run: npm install
 
+      - name: Install Testing Dependencies
+        run: npm install --only=dev
+
       - name: Run Backend Tests
         working-directory: ./backend
-        run: npm test
+        run: |
+          if [ ! -d ./backend ]; then echo "Directory ./backend does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Run Frontend Tests
         working-directory: ./frontend
-        run: npm test
+        run: |
+          if [ ! -d ./frontend ]; then echo "Directory ./frontend does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Run Mobile Tests
         working-directory: ./mobile
-        run: npm test
+        run: |
+          if [ ! -d ./mobile ]; then echo "Directory ./mobile does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Run Desktop Tests
         working-directory: ./desktop
-        run: npm test
+        run: |
+          if [ ! -d ./desktop ]; then echo "Directory ./desktop does not exist" >&2; exit 1; fi
+          npm test
 
   build:
     name: Build and Deploy
@@ -49,30 +60,39 @@ jobs:
 
       - name: Build Backend
         working-directory: ./backend
-        run: npm run build
+        run: |
+          if [ ! -d ./backend ]; then echo "Directory ./backend does not exist" >&2; exit 1; fi
+          npm run build
 
       - name: Build Frontend
         working-directory: ./frontend
-        run: npm run build
+        run: |
+          if [ ! -d ./frontend ]; then echo "Directory ./frontend does not exist" >&2; exit 1; fi
+          npm run build
 
       - name: Build Mobile
         working-directory: ./mobile
-        run: npm run build
+        run: |
+          if [ ! -d ./mobile ]; then echo "Directory ./mobile does not exist" >&2; exit 1; fi
+          npm run build
 
       - name: Deploy Backend
         run: |
-          scp -r ./backend/build server:/var/www/evade-backend
-          ssh server 'systemctl restart evade-backend'
+          if [ ! -d /var/www/evade-backend ]; then mkdir -p /var/www/evade-backend; fi
+          cp -r ./backend/build/* /var/www/evade-backend
+          systemctl restart evade-backend || { echo "Error restarting evade-backend service. Please check logs or configuration." >&2; exit 1; }
 
       - name: Deploy Frontend
         run: |
-          scp -r ./frontend/build server:/var/www/evade-frontend
-          ssh server 'systemctl restart evade-frontend'
+          if [ ! -d /var/www/evade-frontend ]; then mkdir -p /var/www/evade-frontend; fi
+          cp -r ./frontend/build/* /var/www/evade-frontend
+          systemctl restart evade-frontend || { echo "Error restarting evade-frontend service. Please check logs or configuration." >&2; exit 1; }
 
       - name: Deploy Mobile
         run: |
-          scp -r ./mobile/build server:/var/www/evade-mobile
-          ssh server 'systemctl restart evade-mobile'
+          if [ ! -d /var/www/evade-mobile ]; then mkdir -p /var/www/evade-mobile; fi
+          cp -r ./mobile/build/* /var/www/evade-mobile
+          systemctl restart evade-mobile || { echo "Error restarting evade-mobile service. Please check logs or configuration." >&2; exit 1; }
 
   advanced_features:
     name: Enable New Features
@@ -83,36 +103,48 @@ jobs:
 
       - name: Test OnStar-Like Features
         working-directory: ./backend/onstar
-        run: npm test
+        run: |
+          if [ ! -d ./backend/onstar ]; then echo "Directory ./backend/onstar does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Test Viper/Compustar Security
         working-directory: ./backend/security
-        run: npm test
+        run: |
+          if [ ! -d ./backend/security ]; then echo "Directory ./backend/security does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Test Advanced Navigation
         working-directory: ./frontend/navigation
-        run: npm test
+        run: |
+          if [ ! -d ./frontend/navigation ]; then echo "Directory ./frontend/navigation does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Test Connectivity Features
         working-directory: ./mobile/connectivity
-        run: npm test
+        run: |
+          if [ ! -d ./mobile/connectivity ]; then echo "Directory ./mobile/connectivity does not exist" >&2; exit 1; fi
+          npm test
 
       - name: Deploy OnStar-Like Features
         run: |
-          scp -r ./backend/onstar/build server:/var/www/evade-onstar
-          ssh server 'systemctl restart evade-onstar'
+          if [ ! -d /var/www/evade-onstar ]; then mkdir -p /var/www/evade-onstar; fi
+          cp -r ./backend/onstar/build/* /var/www/evade-onstar
+          systemctl restart evade-onstar || { echo "Error restarting evade-onstar service. Please check logs or configuration." >&2; exit 1; }
 
       - name: Deploy Security Features
         run: |
-          scp -r ./backend/security/build server:/var/www/evade-security
-          ssh server 'systemctl restart evade-security'
+          if [ ! -d /var/www/evade-security ]; then mkdir -p /var/www/evade-security; fi
+          cp -r ./backend/security/build/* /var/www/evade-security
+          systemctl restart evade-security || { echo "Error restarting evade-security service. Please check logs or configuration." >&2; exit 1; }
 
       - name: Deploy Advanced Navigation
         run: |
-          scp -r ./frontend/navigation/build server:/var/www/evade-navigation
-          ssh server 'systemctl restart evade-navigation'
+          if [ ! -d /var/www/evade-navigation ]; then mkdir -p /var/www/evade-navigation; fi
+          cp -r ./frontend/navigation/build/* /var/www/evade-navigation
+          systemctl restart evade-navigation || { echo "Error restarting evade-navigation service. Please check logs or configuration." >&2; exit 1; }
 
       - name: Deploy Connectivity Features
         run: |
-          scp -r ./mobile/connectivity/build server:/var/www/evade-connectivity
-          ssh server 'systemctl restart evade-connectivity'
+          if [ ! -d /var/www/evade-connectivity ]; then mkdir -p /var/www/evade-connectivity; fi
+          cp -r ./mobile/connectivity/build/* /var/www/evade-connectivity
+          systemctl restart evade-connectivity || { echo "Error restarting evade-connectivity service. Please check logs or configuration." >&2; exit 1; }
