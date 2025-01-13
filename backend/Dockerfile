@@ -1,5 +1,6 @@
+# Backend Dockerfile
 FROM node:16
 WORKDIR /app
 COPY . .
 RUN npm install
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]

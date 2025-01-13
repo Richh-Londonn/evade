@@ -1,0 +1,8 @@
+{
+  "name": "evade",
+  "version": "1.0.0",
+  "description": "Comprehensive navigation and detection system.",
+  "main": "backend/src/index.js",
+  "dependencies": {},
+  "devDependencies": {}
+}

@@ -1,0 +1,2 @@
+// Android Auto Gradle file
+apply plugin: 'com.android.application'

@@ -1,1 +1,2 @@
-class UserService { /* User service logic */ } module.exports = new UserService();
+// User Service
+module.exports = { createUser: (user) => `User ${user.name} created.` };

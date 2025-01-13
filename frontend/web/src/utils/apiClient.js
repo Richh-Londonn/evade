@@ -1,1 +1,2 @@
-import axios from 'axios'; const apiClient = axios.create({}); export default apiClient;
+// API Client
+export const fetchData = () => 'Data fetched';

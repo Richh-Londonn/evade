@@ -1,1 +1,2 @@
-module.exports = async (req, res) => { /* Register handler */ };
+// Register API
+module.exports = (req, res) => res.send('User registered');

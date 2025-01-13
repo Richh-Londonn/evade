@@ -1,1 +1,2 @@
-module.exports = (req, res, next) => { /* Auth Middleware */ };
+// Auth Middleware
+module.exports = (req, res, next) => { console.log('Auth middleware'); next(); };

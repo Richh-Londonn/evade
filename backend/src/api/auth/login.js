@@ -1,1 +1,2 @@
-module.exports = async (req, res) => { /* Login handler */ };
+// Login API
+module.exports = (req, res) => res.send('Login successful');
