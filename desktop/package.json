@@ -1,0 +1,12 @@
+{
+    "name": "evade-desktop",
+    "version": "1.0.0",
+    "description": "Evade desktop application for hazard detection and navigation.",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "dependencies": {
+        "electron": "^25.0.0"
+    }
+}
