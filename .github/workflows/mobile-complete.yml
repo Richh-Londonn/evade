@@ -1,0 +1,43 @@
+
+name: Mobile CI
+
+on:
+  push:
+    paths:
+      - 'mobile/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'mobile/**'
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Java (for Android)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Install React Native Dependencies
+        run: npm install
+        working-directory: mobile/
+
+      - name: Build Android App
+        run: ./gradlew assembleRelease
+        working-directory: mobile/android/
+
+      - name: Build iOS App
+        run: xcodebuild -workspace mobile/ios/YourApp.xcworkspace -scheme YourApp -sdk iphoneos -configuration AppStoreDistribution archive -archivePath YourApp.xcarchive
+
+      - name: Run Tests
+        run: npm test
+        working-directory: mobile/

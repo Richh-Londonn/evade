@@ -1,0 +1,49 @@
+
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'frontend/**'
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: frontend/
+
+      - name: Run Linter
+        run: npm run lint
+        working-directory: frontend/
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend/
+
+      - name: Run Cypress Tests
+        run: npx cypress run
+        working-directory: frontend/
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/build/
