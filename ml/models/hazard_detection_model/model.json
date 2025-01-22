@@ -1,0 +1,55 @@
+
+{
+  "modelTopology": {
+    "class_name": "Sequential",
+    "config": [
+      {
+        "class_name": "InputLayer",
+        "config": {
+          "batch_input_shape": [null, 128, 128, 3],
+          "dtype": "float32",
+          "sparse": false,
+          "ragged": false
+        }
+      },
+      {
+        "class_name": "Conv2D",
+        "config": {
+          "filters": 32,
+          "kernel_size": [3, 3],
+          "strides": [1, 1],
+          "padding": "valid",
+          "activation": "relu"
+        }
+      },
+      {
+        "class_name": "Flatten",
+        "config": {}
+      },
+      {
+        "class_name": "Dense",
+        "config": {
+          "units": 1,
+          "activation": "sigmoid"
+        }
+      }
+    ]
+  },
+  "weightsManifest": [
+    {
+      "paths": ["weights.bin"],
+      "weights": [
+        {
+          "name": "conv2d/kernel",
+          "shape": [3, 3, 3, 32],
+          "dtype": "float32"
+        },
+        {
+          "name": "dense/kernel",
+          "shape": [32, 1],
+          "dtype": "float32"
+        }
+      ]
+    }
+  ]
+}

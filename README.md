@@ -1,29 +1,22 @@
-# Evade Repository
 
-## Overview
-Evade is a next-generation navigation and detection system with advanced radar capabilities, AI-driven routing, and offline support.
+# Evade Project
 
-## Features
-- Real-time hazard detection and navigation.
-- Offline maps and dynamic caching.
-- Fleet management tools.
-- Advanced security and privacy measures.
+Evade is a multi-platform advanced navigation and detection system designed to redefine safety and convenience for users. 
+This repository contains the source code and resources for all components of the Evade project.
 
-## Getting Started
-### Backend
-1. Navigate to the `backend/` directory.
-2. Install dependencies: `npm install`
-3. Start the server: `npm start`
+## Directory Structure
+- **backend**: Server-side logic, APIs, and database configurations.
+- **frontend**: Web interface and user-facing components.
+- **mobile**: Mobile app for iOS and Android platforms.
+- **desktop**: Cross-platform desktop applications.
+- **usb**: USB-specific functionalities, drivers, and firmware.
+- **offline**: Offline navigation, map caching, and data updates.
+- **shared**: Reusable constants, helpers, and interfaces.
+- **infra**: Infrastructure as code, Docker, and CI/CD pipelines.
+- **analytics**: User telemetry and analytics dashboards.
+- **docs**: Documentation for developers and users.
+- **security**: Security configurations and audits.
+- **community**: User feedback, feature requests, and discussions.
 
-### Frontend
-1. Navigate to the `frontend/` directory.
-2. Install dependencies: `npm install`
-3. Start the development server: `npm start`
-
-### Mobile
-1. Navigate to the `mobile/` directory.
-2. Install dependencies: `npm install`
-3. Run the app: `npm start`
-
-## Contributing
-See `CONTRIBUTING.md` for guidelines.
+## Development Status
+Refer to the progress report for current development updates.
