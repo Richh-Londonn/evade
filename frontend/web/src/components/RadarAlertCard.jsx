@@ -1,0 +1,1 @@
+const RadarAlertCard = () => { /* Alert Card */ }; export default RadarAlertCard;
