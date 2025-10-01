@@ -1,11 +1,11 @@
-name: Auto Push Backend Updates from Release
+name: Auto Push Updates from Release
 
 on:
   release:
     types: [published]
 
 jobs:
-  update-backend:
+  update-evade:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,25 +14,61 @@ jobs:
         with:
           token: ${{ secrets.EVADER_TOKEN }}
 
-      - name: Download release asset
+      # === BACKEND UPDATE ===
+      - name: Download backend update
         uses: robinraju/release-downloader@v1
         with:
           repository: ${{ github.repository }}
           latest: true
           fileName: "evade_backend_update.zip"
           token: ${{ secrets.EVADER_TOKEN }}
+        continue-on-error: true
 
       - name: Extract backend update
+        if: success()
         run: |
-          unzip -o evade_backend_update.zip -d backend_update
-          cp -r backend_update/* backend/
+          unzip -o evade_backend_update.zip -d backend_update || true
+          cp -r backend_update/* backend/ || true
 
+      # === FRONTEND UPDATE ===
+      - name: Download frontend update
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          latest: true
+          fileName: "evade_frontend_update.zip"
+          token: ${{ secrets.EVADER_TOKEN }}
+        continue-on-error: true
+
+      - name: Extract frontend update
+        if: success()
+        run: |
+          unzip -o evade_frontend_update.zip -d frontend_update || true
+          cp -r frontend_update/* frontend/ || true
+
+      # === MOBILE UPDATE ===
+      - name: Download mobile update
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          latest: true
+          fileName: "evade_mobile_update.zip"
+          token: ${{ secrets.EVADER_TOKEN }}
+        continue-on-error: true
+
+      - name: Extract mobile update
+        if: success()
+        run: |
+          unzip -o evade_mobile_update.zip -d mobile_update || true
+          cp -r mobile_update/* mobile/ || true
+
+      # === COMMIT & PUSH ===
       - name: Commit changes
         run: |
           git config --global user.name "Evade-AutoBot"
           git config --global user.email "autobot@evade.com"
-          git add backend/
-          git commit -m "Automated backend update from release" || echo "No changes to commit"
+          git add backend/ frontend/ mobile/
+          git commit -m "Automated update from release: backend/frontend/mobile" || echo "No changes to commit"
 
       - name: Push changes
         run: |
