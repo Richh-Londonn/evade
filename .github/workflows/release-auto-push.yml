@@ -1,0 +1,39 @@
+name: Auto Push Backend Updates from Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.EVADER_TOKEN }}
+
+      - name: Download release asset
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          latest: true
+          fileName: "evade_backend_update.zip"
+          token: ${{ secrets.EVADER_TOKEN }}
+
+      - name: Extract backend update
+        run: |
+          unzip -o evade_backend_update.zip -d backend_update
+          cp -r backend_update/* backend/
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "Evade-AutoBot"
+          git config --global user.email "autobot@evade.com"
+          git add backend/
+          git commit -m "Automated backend update from release" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push origin main
