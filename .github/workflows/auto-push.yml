@@ -1,0 +1,42 @@
+name: Auto Push Backend Updates
+
+on:
+  workflow_dispatch: # run manually from Actions tab
+  push:
+    branches:
+      - main
+
+jobs:
+  update-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.EVADER_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Download update package
+        run: |
+          curl -L -o evade_backend_update.zip "https://raw.githubusercontent.com/your-temp-storage-link"
+          unzip -o evade_backend_update.zip -d backend_update
+
+      - name: Copy backend files
+        run: |
+          cp -r backend_update/* backend/
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "Evade-AutoBot"
+          git config --global user.email "autobot@evade.com"
+          git add backend/
+          git commit -m "Automated backend update: Alerts + Fleet integration" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push origin main
