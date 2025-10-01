@@ -1,4 +1,4 @@
-name: Auto Push Updates from Release
+name: Auto Push & Validate Updates
 
 on:
   release:
@@ -62,14 +62,86 @@ jobs:
           unzip -o evade_mobile_update.zip -d mobile_update || true
           cp -r mobile_update/* mobile/ || true
 
-      # === COMMIT & PUSH ===
+      # === VALIDATION PHASE ===
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (Backend)
+        working-directory: ./backend
+        run: npm install || true
+
+      - name: Install dependencies (Frontend)
+        working-directory: ./frontend
+        run: npm install || true
+
+      - name: Install dependencies (Mobile)
+        working-directory: ./mobile
+        run: npm install || true
+
+      - name: Run backend tests
+        id: backend-tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Run frontend build
+        id: frontend-build
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Run mobile build
+        id: mobile-build
+        working-directory: ./mobile
+        run: npm run build
+
+      # === COMMIT & PUSH (only if validation passes) ===
       - name: Commit changes
+        if: success()
         run: |
           git config --global user.name "Evade-AutoBot"
           git config --global user.email "autobot@evade.com"
           git add backend/ frontend/ mobile/
-          git commit -m "Automated update from release: backend/frontend/mobile" || echo "No changes to commit"
+          git commit -m "Automated validated update from release: backend/frontend/mobile" || echo "No changes to commit"
 
       - name: Push changes
+        if: success()
         run: |
           git push origin main
+
+      # === SAVE LOGS ON FAILURE ===
+      - name: Save logs on failure
+        if: failure()
+        run: |
+          echo "Validation failed in Auto Push workflow." > error-log.txt
+          echo "" >> error-log.txt
+          echo "Backend Test Status: ${{ steps.backend-tests.outcome }}" >> error-log.txt
+          echo "Frontend Build Status: ${{ steps.frontend-build.outcome }}" >> error-log.txt
+          echo "Mobile Build Status: ${{ steps.mobile-build.outcome }}" >> error-log.txt
+
+      # === OPEN ISSUE ON FAILURE (ASSIGN + LABEL) ===
+      - name: Create GitHub Issue if validation fails
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "🚨 Validation Failed in Auto Push Workflow"
+          content-filepath: ./error-log.txt
+          token: ${{ secrets.EVADER_TOKEN }}
+          assignees: |
+            Roderick-Lunon
+          labels: |
+            validation-failed
+            automation
+            urgent
+
+      # === AUTO-CLOSE FAILURE ISSUES WHEN SUCCESS ===
+      - name: Close failure issues if validation succeeds
+        if: success()
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: |
+            # Closes all open validation-failed issues
+          token: ${{ secrets.EVADER_TOKEN }}
+          labels: validation-failed
+          comment: |
+            ✅ Validation succeeded on the latest release. This issue is now resolved and automatically closed.
